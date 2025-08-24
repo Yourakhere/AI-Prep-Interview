@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import HERO_IMG from '../assets/hero-img.png';
+import HERO_IMG from '../assets/hero-img1.png';
 import { APP_FEATURES } from '../utils/data';
 import { useNavigate } from 'react-router-dom';
 import { LuSparkles } from 'react-icons/lu';
@@ -132,3 +132,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+
