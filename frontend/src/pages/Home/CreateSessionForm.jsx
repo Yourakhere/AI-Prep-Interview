@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { generatePath, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Input from "../../components/Inputs/Input";
 import SpinnerLoader from "../../components/Loader/SpinnerLoader";
 import axiosInstance from "../../utils/axiosInstance";
@@ -26,72 +26,62 @@ const CreateSessionForm = () => {
   };
 
   const handleCreateSession = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const { role, experience, topicsToFocus, description } = formData;
+    const { role, experience, topicsToFocus } = formData;
 
-  if (!role || !experience || !topicsToFocus) {
-    setError("Please fill all the required fields.");
-    return;
-  }
+    if (!role || !experience || !topicsToFocus) {
+      setError("Please fill all the required fields.");
+      return;
+    }
 
-  setIsLoading(true);
-  setError("");
+    setIsLoading(true);
+    setError("");
 
-  try {
-    // 1. Ask AI to generate questions
-    const aiResponse = await axiosInstance.post(
-      API_PATHS.AI.GENERATE_QUESTIONS,
-      {
+    try {
+      // 1. Generate AI questions
+      const aiResponse = await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS, {
         role,
         experience,
         topicsToFocus,
         numberOfQuestion: 10,
+      });
+
+      const generatedQuestions = aiResponse.data;
+
+      // 2. Create session
+      const response = await axiosInstance.post(API_PATHS.SESSION.CREATE, {
+        ...formData,
+        questions: generatedQuestions,
+      });
+
+      if (response.data?.session?._id) {
+        navigate(`/interview-prep/${response.data.session._id}`);
       }
-    );
-
-    // ✅ backend returns array directly
-    const generatedQuestions = aiResponse.data;
-
-    // 2. Create session with generated questions
-    const response = await axiosInstance.post(API_PATHS.SESSION.CREATE, {
-      ...formData,
-      questions: generatedQuestions,
-    });
-
-    if (response.data?.session?._id) {
-      navigate(`/interview-prep/${response.data.session._id}`);
+    } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-
-  } catch (error) {
-    setError(error.response?.data?.message || "Something went wrong. Please try again.");
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  };
 
   return (
-    <div className=" p-7 flex flex-col justify-center">
-      <h3 className="text-lg font-semibold text-black">
+    <div className="p-8 flex flex-col justify-center bg-white rounded-2xl shadow-lg">
+      <h3 className="text-2xl font-bold text-purple-900 mb-1">
         Start a New Interview Journey
       </h3>
-      <p className="text-xs text-slate-700 mt-[5px] mb-3">
-        Fill out a few quick details and unlock your personalized set of
-        interview questions!
+      <p className="text-gray-700 text-sm mb-4">
+        Fill out a few quick details and unlock your personalized set of interview questions!
       </p>
 
-      <form onSubmit={handleCreateSession} className="flex flex-col gap-3">
-        {/* Role */}
+      <form onSubmit={handleCreateSession} className="flex flex-col gap-4">
         <Input
           value={formData.role}
           onChange={({ target }) => handleChange("role", target.value)}
           label="Target Role"
-          placeholder="e.g., Frontend Developer, UI/UX Designer, etc."
+          placeholder="e.g., Frontend Developer, UI/UX Designer"
           type="text"
         />
-
-        {/* Experience */}
         <Input
           value={formData.experience}
           onChange={({ target }) => handleChange("experience", target.value)}
@@ -99,8 +89,6 @@ const CreateSessionForm = () => {
           placeholder="e.g., 1 year, 3 years, 5+ years"
           type="number"
         />
-
-        {/* Topics to Focus */}
         <Input
           value={formData.topicsToFocus}
           onChange={({ target }) => handleChange("topicsToFocus", target.value)}
@@ -108,8 +96,6 @@ const CreateSessionForm = () => {
           placeholder="Comma-separated, e.g., React, Node.js, MongoDB"
           type="text"
         />
-
-        {/* Description */}
         <Input
           value={formData.description}
           onChange={({ target }) => handleChange("description", target.value)}
@@ -118,21 +104,18 @@ const CreateSessionForm = () => {
           type="text"
         />
 
-        {/* Error message */}
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        {/* Submit */}
         <button
           type="submit"
-          className="btn-primary w-full mt-2"
+          className="w-full py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-white font-semibold hover:scale-105 hover:shadow-lg transition-transform disabled:opacity-70"
           disabled={isLoading}
         >
-           {isLoading ? <SpinnerLoader /> : "Create Session"}
-
+          {isLoading ? <SpinnerLoader /> : "Create Session"}
         </button>
       </form>
     </div>
   );
-};    
+};
 
 export default CreateSessionForm;

@@ -6,12 +6,11 @@ const ProfilePhotoSelector = ({ image, setImage }) => {
   const [previewUrl, setPreviewUrl] = useState(null);
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];  
+    const file = e.target.files[0];
     if (file) {
       setImage(file);
-
       const preview = URL.createObjectURL(file);
-      setPreviewUrl(preview); 
+      setPreviewUrl(preview);
     }
   };
 
@@ -25,7 +24,7 @@ const ProfilePhotoSelector = ({ image, setImage }) => {
   };
 
   return (
-    <div className="flex justify-center mb-6">
+    <div className="flex justify-center mb-6 relative">
       <input
         type="file"
         accept="image/*"
@@ -33,30 +32,31 @@ const ProfilePhotoSelector = ({ image, setImage }) => {
         onChange={handleImageChange}
         className="hidden"
       />
+
       {!image ? (
-        <div className="w-20 h-20 flex items-center justify-center bg-orange-50 rounded-full relative cursor-pointer">
-          <LuUser className="text-4xl text-orange-500" />
+        <div className="w-24 h-24 flex items-center justify-center bg-purple-100 rounded-full relative cursor-pointer hover:scale-105 transition-transform">
+          <LuUser className="text-5xl text-purple-500" />
           <button
             type="button"
-            className="w-8 h-8 flex items-center justify-center bg-linear-to-r from-orange-600/85 to-orange-600 text-white rounded-full"
+            className="w-8 h-8 flex items-center justify-center bg-gradient-to-r from-purple-500 via-pink-500 to-pink-600 text-white rounded-full absolute bottom-0 right-0 shadow-lg hover:scale-110 transition-transform"
             onClick={onChooseFile}
           >
-            <LuUpload />
+            <LuUpload className="text-sm" />
           </button>
         </div>
       ) : (
-        <div className="relative ">
+        <div className="relative w-24 h-24">
           <img
-            src={previewUrl}  
-            alt="profile photo"
-            className="w-20 h-20 rounded-full object-cover"
+            src={previewUrl}
+            alt="profile"
+            className="w-full h-full rounded-full object-cover border-2 border-purple-300"
           />
           <button
             type="button"
-            className="w-8 h-8 flex items-center bg-red-500 justify-center text-white rounded-full absolute -bottom-1 -right-1 cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-full absolute -bottom-1 -right-1 shadow-md hover:scale-110 transition-transform"
             onClick={handleRemoveImage}
           >
-            <LuTrash />
+            <LuTrash className="text-sm" />
           </button>
         </div>
       )}
