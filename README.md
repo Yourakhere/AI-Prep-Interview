@@ -1,0 +1,1 @@
+📌 AI Interview AI-powered interview preparation platform where users can: ✍️ Sign up / log in with profile 📝 Create and manage interview sessions 🤖 Generate smart AI interview questions 💡 Get AI-generated explanations for better learning 📷 Upload profile pictures (Cloudinary support) 🚀 Built with MERN stack + JWT Auth + Cloudinary
