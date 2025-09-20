@@ -1,4 +1,7 @@
-export const BASE_URL = "https://ai-prep-interview.onrender.com";
+
+//export const BASE_URL = "https://ai-prep-interview.onrender.com";
+
+export const BASE_URL = "https://ai-prep-backend.vercel.app";
 
 export const API_PATHS = {
   AUTH: {
@@ -29,4 +32,5 @@ export const API_PATHS = {
     UPDATE_NOTE: (id) => `/api/questions/${id}/note`,  
   },
 };
+
 
