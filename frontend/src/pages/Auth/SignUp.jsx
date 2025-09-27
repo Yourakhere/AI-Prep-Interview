@@ -21,57 +21,56 @@ const SignUp = ({setCurrentPage}) => {
 
   const navigate = useNavigate();
 
-const handleSignUp = async(e) => {
-    e.preventDefault();
+const handleSignUp = async (e) => {
+  e.preventDefault();
 
-    let profileImageUrl = null;
+  if (!fullName) {
+    toast.error("Please enter full name.");
+    return;
+  }
+  if (!validateEmail(email)) {
+    toast.error("Please enter a valid email address.");
+    return;
+  }
+  if (!password) {
+    toast.error("Please enter the password.");
+    return;
+  }
 
-    if(!fullName) {
-      toast.error("Please enter full name.");
-      return;
+  setIsLoading(true); // start loader ✅
+
+  try {
+    let profileImageUrl = "";
+
+    if (profilePic) {
+      const imgUploadRes = await uploadImage(profilePic);
+      profileImageUrl = imgUploadRes?.imageUrl || "";
     }
-    if(!validateEmail(email)){
-      toast.error("please enter valid email address.");
-      return;
+
+    const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+      name: fullName,
+      email,
+      password,
+      profileImageUrl,
+    });
+
+    const { token, ...userData } = response.data;
+
+    if (token) {
+      localStorage.setItem("token", token);
+      updateUser({ ...userData, token });
+      navigate("/dashboard");
     }
-    if(!password){
-      toast.error("Please enter the password.")
-      return; // Added return here to prevent further execution
+  } catch (error) {
+    if (error.response?.data?.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("Something went wrong. Please try again.");
     }
-    // Remove the redundant toast.error(""); line
-    // toast.error(""); 
-
-    try {
-      if (profilePic) {
-        const imgUploadRes = await uploadImage(profilePic);
-        profileImageUrl = imgUploadRes.imageUrl || "";
-      }
-
-      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
-        name: fullName,
-        email,
-        password,
-        profileImageUrl,
-      });
-
-      // Corrected destructuring to handle the flat response object
-      const { token, ...userData } = response.data; 
-
-      if (token) {
-        localStorage.setItem("token", token);
-        // Pass the entire user data to updateUser
-        updateUser({ ...userData, token });
-        navigate("/dashboard");
-      }
-
-    } catch (error) {
-      if(error.response && error.response.data.message){
-        toast.error(error.response.data.message);
-      } else{
-        toast.error("Something went wrong. Please try again.");
-      }
-    }
-  };
+  } finally {
+    setIsLoading(false); // stop loader ✅
+  }
+};
   return (
     <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
        <h3 className='text-lg font-semibold text-black'>Create an Account</h3>
