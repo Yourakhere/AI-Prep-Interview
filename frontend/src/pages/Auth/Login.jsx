@@ -17,38 +17,42 @@ const Login = ({ setCurrentPage }) => {
 
   const navigate = useNavigate()
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
+ const handleLogin = async (e) => {
+  e.preventDefault();
 
-    if (!validateEmail(email)) {
-      toast.error('Please enter a valid email address')
-      return
-    }
-    if (!password) {
-      toast.error('Please enter the password')
-      return
-    }
-
-    try {
-      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
-        email,
-        password,
-      })
-      const { token } = response.data
-
-      if (token) {
-        localStorage.setItem('token', token)
-        updateUser(response.data)
-        navigate('/dashboard')
-      }
-    } catch (error) {
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.message)
-      } else {
-        toast.error('Something went wrong, please try again later')
-      }
-    }
+  if (!validateEmail(email)) {
+    toast.error("Please enter a valid email address");
+    return;
   }
+  if (!password) {
+    toast.error("Please enter the password");
+    return;
+  }
+
+  setIsLoading(true);  
+
+  try {
+    const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
+      email,
+      password,
+    });
+    const { token } = response.data;
+
+    if (token) {
+      localStorage.setItem("token", token);
+      updateUser(response.data);
+      navigate("/dashboard");
+    }
+  } catch (error) {
+    if (error.response && error.response.data) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("Something went wrong, please try again later");
+    }
+  } finally {
+    setIsLoading(false);  
+  }
+};
 
   return (
     <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
