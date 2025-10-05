@@ -1,0 +1,24 @@
+{
+  "name": "Interview Prep",
+  "short_name": "AI Interview Prep",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#317EFB",
+  "description": "AI Interview Prep Create and customize your professional Interview Question Anser and extra explanation with ease.",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/ai.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/ai.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
