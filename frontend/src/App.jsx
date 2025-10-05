@@ -7,6 +7,7 @@ import LandingPage from './pages/LandingPage'
 import Dashboard from './pages/Home/Dashboard';
 import InterviewPrep from './pages/InterviewPrep/InterviewPrep';
 import UserProvider from './context/userContext';
+import InstallPrompt from "./components/InstallPrompt";  
 
 function App() { 
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path='/interview-prep/:sessionId' element={<InterviewPrep/>} />
       </Routes>
     </Router>
+     <InstallPrompt />
     <Toaster
     toastOptions={{
       className:"",
